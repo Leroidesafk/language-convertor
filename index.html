@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Language Convertor</title>
+<link rel="icon" href="./assets/imgs/realms.png">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="./js/expander.js" defer></script>
+<script src="./js/script.js" defer></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <div class="banner">
+        <div class="banner-card">
+            <h2 class="banner-title">Language Convertor</h2>
+        </div>
+        <div class="banner-line"></div>
+    </div>
+    <div class="case">
+        <div class="importer">
+    <div class="upload-container">
+
+        <!-- Source -->
+        <div class="upload-hole" id="sourceDropZone">
+            <span class="upload-title">Source</span>
+
+            <span id="sourceFileName"></span>
+
+            <div class="selector" id="sourceUploadUI">
+                <svg width="19" height="21" viewBox="0 0 19 21" fill="currentColor">
+                    <path d="M10.5 0.499985H8.5V2.49998H6.5V4.49998H4.5V6.49998H6.5V4.49998H8.5V16.5H10.5V4.49998H12.5V6.49998H14.5V4.49998H12.5V2.49998H10.5V0.499985ZM4.5 8.49998H2.5H0.5V10.5V18.5V20.5H18.5V18.5V10.5V8.49998H16.5H14.5V10.5H16.5V18.5H2.5L2.5 10.5H4.5V8.49998Z"/>
+                </svg>
+
+                <button class="button" id="sourceButton">
+                    Upload Source
+                </button>
+            </div>
+
+            <input type="file" id="sourceInput" hidden>
+        </div>
+
+        <!-- Languages -->
+        <div class="upload-hole" id="languagesDropZone">
+            <span class="upload-title">Languages</span>
+
+            <span id="languagesFileName"></span>
+
+            <div class="selector" id="languagesUploadUI">
+                <svg width="19" height="21" viewBox="0 0 19 21" fill="currentColor">
+                    <path d="M10.5 0.499985H8.5V2.49998H6.5V4.49998H4.5V6.49998H6.5V4.49998H8.5V16.5H10.5V4.49998H12.5V6.49998H14.5V4.49998H12.5V2.49998H10.5V0.499985ZM4.5 8.49998H2.5H0.5V10.5V18.5V20.5H18.5V18.5V10.5V8.49998H16.5H14.5V10.5H16.5V18.5H2.5L2.5 10.5H4.5V8.49998Z"/>
+                </svg>
+
+                <button class="button" id="languagesButton">
+                    Upload Languages
+                </button>
+            </div>
+
+            <input type="file" id="languagesInput" multiple hidden>
+        </div>
+
+    </div>
+</div>
+        <div class="title">
+            <h3 class="text-title">Informations</h3>
+            <button aria-expanded="false" aria-controls="explenations" class="text-expander" >
+                <span class="label">Read more</span>
+                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0L2 0L2 2L0 2L0 0Z" fill="currentColor"></path><path d="M2 2H4V4L2 4L2 2Z" fill="currentColor"></path><path d="M4 4H6V6H4L4 4Z" fill="currentColor"></path><path d="M6 2H8L8 4H6L6 2Z" fill="currentColor"></path><path d="M8 0L10 0V2L8 2V0Z" fill="currentColor"></path></svg>
+            </button>
+        </div>
+        <div class="text">
+            <p>Note! The source file and the language(s) files must be JSON files containing the same keys.</p>
+            <p class="more-text">How does it work?<br>The source file must contain the original keys along with their icons and %s placeholders (e.g., "menu.singleplayer": "\uDB80\uDC00 %s \uDB80\uDC00§r"). Each language file must contain the same keys, but only with the translated text (without icons or %s). The tool then replaces each %s in the source file with the corresponding translation, while keeping the icons and colors intact. A ZIP file containing a converted JSON file for each language is then generated, ready for download.</p>
+        </div>
+        <div class="divider"></div>
+        <div id="extraButtons" class="extra-buttons">
+            <button id="convertAgainBtn" class="button button--red hidden">
+                Convert Again
+            </button>
+        </div>
+    </div>
+</div>
+<div class="footer-note">
+    Website made by Leroidesafk
+</div>
+</body>
+</html>
