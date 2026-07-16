@@ -3,7 +3,7 @@ let languageFiles = [];
 let convertedBlob = null;
 
 const MC_ASSETS_REPO = "InventivetalentDev/minecraft-assets";
-const DEFAULT_MC_ASSETS_VERSION = "26.1.2";
+const DEFAULT_MC_ASSETS_VERSION = "26.2";
 
 const versionSelect = document.getElementById("versionSelect");
 
