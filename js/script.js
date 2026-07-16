@@ -3,7 +3,9 @@ let languageFiles = [];
 let convertedBlob = null;
 
 const MC_ASSETS_REPO = "InventivetalentDev/minecraft-assets";
-const MC_ASSETS_VERSION = "26.1.2";
+const DEFAULT_MC_ASSETS_VERSION = "26.1.2";
+
+const versionSelect = document.getElementById("versionSelect");
 
 const sourceInput = document.getElementById("sourceInput");
 const languagesInput = document.getElementById("languagesInput");
@@ -59,15 +61,48 @@ languagesInput.addEventListener("change", () => {
 
 });
 
+// ---------------- VERSION LIST ----------------
+
+async function loadVersionList() {
+    try {
+        const res = await fetch(
+            `https://api.github.com/repos/${MC_ASSETS_REPO}/tags?per_page=100`
+        );
+        if (!res.ok) return;
+        const tags = await res.json();
+        if (!Array.isArray(tags) || !tags.length) return;
+
+        versionSelect.innerHTML = "";
+        for (const tag of tags) {
+            const option = document.createElement("option");
+            option.value = tag.name;
+            option.textContent = tag.name;
+            versionSelect.appendChild(option);
+        }
+
+        const hasDefault = [...versionSelect.options]
+            .some(option => option.value === DEFAULT_MC_ASSETS_VERSION);
+        if (hasDefault) {
+            versionSelect.value = DEFAULT_MC_ASSETS_VERSION;
+        }
+    } catch (error) {
+        console.error("Unable to load version list", error);
+    }
+}
+
+loadVersionList();
+
 // ---------------- FETCH ALL LANGUAGES ----------------
 
 async function fetchAllLanguages() {
     languagesButton.disabled = true;
     allLanguagesButton.disabled = true;
+    versionSelect.disabled = true;
     languagesFileName.textContent = "Loading languages...";
     try {
+        const version = versionSelect.value || DEFAULT_MC_ASSETS_VERSION;
         const listUrl =
-            `https://api.github.com/repos/${MC_ASSETS_REPO}/contents/assets/minecraft/lang?ref=${MC_ASSETS_VERSION}`;
+            `https://api.github.com/repos/${MC_ASSETS_REPO}/contents/assets/minecraft/lang?ref=${version}`;
         const listResponse = await fetch(listUrl);
         if (!listResponse.ok) {
             throw new Error(
@@ -98,7 +133,7 @@ async function fetchAllLanguages() {
         }));
 
         languagesFileName.textContent =
-            `${languageFiles.length} language(s) loaded (mcasset.cloud ${MC_ASSETS_VERSION})`;
+            `${languageFiles.length} language(s) loaded (mcasset.cloud ${version})`;
         languagesUploadUI.classList.add("hidden");
         checkReady();
     } catch (error) {
@@ -110,6 +145,7 @@ async function fetchAllLanguages() {
     } finally {
         languagesButton.disabled = false;
         allLanguagesButton.disabled = false;
+        versionSelect.disabled = false;
     }
 }
 
@@ -222,7 +258,7 @@ function createDownloadButton() {
         btn.textContent =
             "Download";
         document
-            .querySelector(".extra-buttons")
+            .querySelector("#rightActions")
             .appendChild(btn);
     }
     btn.onclick = () => {

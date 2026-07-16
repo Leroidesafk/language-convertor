@@ -176,6 +176,32 @@ body {
     justify-content: space-between;
 }
 
+.button-group {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+}
+
+.version-select {
+    background: #262423;
+    color: var(--gray-2);
+    border: 2px solid var(--off-black);
+    box-shadow: inset 0 .1875rem 0 rgba(0,0,0,.5);
+    padding: .6875rem .8125rem;
+    font-family: "Noto Sans", sans-serif;
+    font-size: .8rem;
+    cursor: pointer;
+}
+
+.version-select:hover {
+    color: var(--gray-2-hover);
+}
+
+.version-select:disabled {
+    cursor: not-allowed;
+    opacity: .6;
+}
+
 .title {
     width: 100%;
     display: flex;

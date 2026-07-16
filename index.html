@@ -76,12 +76,19 @@
         </div>
         <div class="divider"></div>
         <div id="extraButtons" class="extra-buttons">
-            <button class="button" id="allLanguagesButton">
-                All Languages
-            </button>
-            <button id="convertAgainBtn" class="button button--red hidden">
-                Convert Again
-            </button>
+            <div class="button-group" id="leftActions">
+                <button class="button" id="allLanguagesButton">
+                    All Languages
+                </button>
+                <select id="versionSelect" class="version-select">
+                    <option value="26.1.2">26.1.2</option>
+                </select>
+            </div>
+            <div class="button-group" id="rightActions">
+                <button id="convertAgainBtn" class="button button--red hidden">
+                    Convert Again
+                </button>
+            </div>
         </div>
     </div>
 </div>
