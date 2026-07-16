@@ -2,12 +2,15 @@ let sourceFile;
 let languageFiles = [];
 let convertedBlob = null;
 
+const MC_ASSETS_REPO = "InventivetalentDev/minecraft-assets";
+const MC_ASSETS_VERSION = "26.1.2";
 
 const sourceInput = document.getElementById("sourceInput");
 const languagesInput = document.getElementById("languagesInput");
 
 const sourceButton = document.getElementById("sourceButton");
 const languagesButton = document.getElementById("languagesButton");
+const allLanguagesButton = document.getElementById("allLanguagesButton");
 
 const sourceFileName = document.getElementById("sourceFileName");
 const languagesFileName = document.getElementById("languagesFileName");
@@ -27,6 +30,10 @@ languagesButton.addEventListener("click", () => {
     languagesInput.click();
 });
 
+allLanguagesButton.addEventListener("click", () => {
+    fetchAllLanguages();
+});
+
 sourceInput.addEventListener("change", () => {
     sourceFile = sourceInput.files[0];
     if (sourceFile) {
@@ -38,8 +45,12 @@ sourceInput.addEventListener("change", () => {
 });
 
 languagesInput.addEventListener("change", () => {
-    languageFiles = [...languagesInput.files];
-    if (languageFiles.length) {
+    const files = [...languagesInput.files];
+    if (files.length) {
+        languageFiles = files.map(file => ({
+            name: file.name,
+            getText: () => file.text()
+        }));
         languagesFileName.textContent =
             `${languageFiles.length} language(s) selected`;
         languagesUploadUI.classList.add("hidden");
@@ -47,6 +58,60 @@ languagesInput.addEventListener("change", () => {
     }
 
 });
+
+// ---------------- FETCH ALL LANGUAGES ----------------
+
+async function fetchAllLanguages() {
+    languagesButton.disabled = true;
+    allLanguagesButton.disabled = true;
+    languagesFileName.textContent = "Loading languages...";
+    try {
+        const listUrl =
+            `https://api.github.com/repos/${MC_ASSETS_REPO}/contents/assets/minecraft/lang?ref=${MC_ASSETS_VERSION}`;
+        const listResponse = await fetch(listUrl);
+        if (!listResponse.ok) {
+            throw new Error(
+                "Unable to retrieve the list of languages (HTTP "
+                + listResponse.status + ")"
+            );
+        }
+        const entries = await listResponse.json();
+        const jsonEntries = entries.filter(
+            entry => entry.type === "file" && entry.name.endsWith(".json")
+        );
+
+        if (!jsonEntries.length) {
+            throw new Error("No language file found.");
+        }
+
+        languageFiles = jsonEntries.map(entry => ({
+            name: entry.name,
+            getText: async () => {
+                const res = await fetch(entry.download_url);
+                if (!res.ok) {
+                    throw new Error(
+                        "Failed to download " + entry.name
+                    );
+                }
+                return res.text();
+            }
+        }));
+
+        languagesFileName.textContent =
+            `${languageFiles.length} language(s) loaded (mcasset.cloud ${MC_ASSETS_VERSION})`;
+        languagesUploadUI.classList.add("hidden");
+        checkReady();
+    } catch (error) {
+        console.error(error);
+        alert(
+            "Error occurred while fetching languages : " + error.message
+        );
+        languagesFileName.textContent = "";
+    } finally {
+        languagesButton.disabled = false;
+        allLanguagesButton.disabled = false;
+    }
+}
 
 // ---------------- CHECK ----------------
 
@@ -59,12 +124,13 @@ function checkReady() {
 // ---------------- CONVERT ----------------
 
 async function convertFiles() {
+    languagesFileName.textContent = "Converting...";
     try {
         const sourceText = await sourceFile.text();
         const sourceJSON = JSON.parse(sourceText);
         const zip = new JSZip();
         for (const langFile of languageFiles) {
-            const langText = await langFile.text();
+            const langText = await langFile.getText();
             const langJSON = JSON.parse(langText);
             const result = {};
             for (const key in sourceJSON) {
@@ -92,19 +158,22 @@ async function convertFiles() {
             type: "blob",
             compression: "DEFLATE"
         });
+        languagesFileName.textContent =
+            `${languageFiles.length} language(s) converted`;
         createDownloadButton();
     } catch (error) {
         console.error(error);
         alert(
             "Invalid JSON file detected."
         );
+        languagesFileName.textContent = "";
     }
 }
 
 // ---------------- FORMAT PRESERVATION ----------------
 
 function preserveFormatting(source, translated) {
-    const placeholderRegex = /%[0-9]*\$?[a-zA-Z]/g;
+    const placeholderRegex = /%\?/g;
     return source.replace(
         placeholderRegex,
         () => translated

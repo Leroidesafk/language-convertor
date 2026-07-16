@@ -72,10 +72,13 @@
         </div>
         <div class="text">
             <p>Note! The source file and the language(s) files must be JSON files containing the same keys.</p>
-            <p class="more-text">How does it work?<br>The source file must contain the original keys along with their icons and %s placeholders (e.g., "menu.singleplayer": "\uDB80\uDC00 %s \uDB80\uDC00§r"). Each language file must contain the same keys, but only with the translated text (without icons or %s). The tool then replaces each %s in the source file with the corresponding translation, while keeping the icons and colors intact. A ZIP file containing a converted JSON file for each language is then generated, ready for download.</p>
+            <p class="more-text">How does it work?<br>The source file must contain the original keys along with their icons and %? placeholders (e.g., "menu.singleplayer": "\uDB80\uDC00 %? \uDB80\uDC00§r"). Each language file must contain the same keys, but only with the translated text (without icons or %?). The tool then replaces each %? in the source file with the corresponding translation, while keeping the icons and colors intact. A ZIP file containing a converted JSON file for each language is then generated, ready for download. You can also click "All Languages" to automatically fetch every official Minecraft language file from mcasset.cloud and use them directly.</p>
         </div>
         <div class="divider"></div>
         <div id="extraButtons" class="extra-buttons">
+            <button class="button" id="allLanguagesButton">
+                All Languages
+            </button>
             <button id="convertAgainBtn" class="button button--red hidden">
                 Convert Again
             </button>
